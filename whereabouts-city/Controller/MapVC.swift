@@ -78,7 +78,15 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
         centerMapOnUserLocation()
     }
     
-    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation is MKUserLocation {
+            return nil
+        }
+        let pinAnnotation = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "droppablePin")
+        pinAnnotation.pinTintColor = #colorLiteral(red: 1, green: 0.6356734633, blue: 0.1988151073, alpha: 1)
+        pinAnnotation.animatesDrop = true
+        return pinAnnotation
+    }
     
 }
 
