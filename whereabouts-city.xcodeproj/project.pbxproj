@@ -16,6 +16,7 @@
 		9A4D3261211D883E00C4964E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9A4D3260211D883E00C4964E /* Assets.xcassets */; };
 		9A4D3264211D883E00C4964E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9A4D3262211D883E00C4964E /* LaunchScreen.storyboard */; };
 		9ADCC45E211E465600797E48 /* DroppablePin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ADCC45D211E465600797E48 /* DroppablePin.swift */; };
+		9AFC408E2120877F0010C4D6 /* PopVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFC408D2120877F0010C4D6 /* PopVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		9A4D3263211D883E00C4964E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9A4D3265211D883E00C4964E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9ADCC45D211E465600797E48 /* DroppablePin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroppablePin.swift; sourceTree = "<group>"; };
+		9AFC408D2120877F0010C4D6 /* PopVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopVC.swift; sourceTree = "<group>"; };
 		B17F0C47BA2A48922CF7C127 /* Pods-whereabouts-city.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-whereabouts-city.release.xcconfig"; path = "Pods/Target Support Files/Pods-whereabouts-city/Pods-whereabouts-city.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -58,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				9A4D325B211D883D00C4964E /* MapVC.swift */,
+				9AFC408D2120877F0010C4D6 /* PopVC.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -251,6 +254,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9AFC408E2120877F0010C4D6 /* PopVC.swift in Sources */,
 				9A2B5C4C211FD1220054717A /* Constants.swift in Sources */,
 				9A2B5C4A211FC8F20054717A /* PhotoCell.swift in Sources */,
 				9A4D325C211D883D00C4964E /* MapVC.swift in Sources */,
