@@ -9,6 +9,8 @@
 import UIKit
 import MapKit
 import CoreLocation
+import Alamofire
+import AlamofireImage
 
 class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIGestureRecognizerDelegate {
 
@@ -28,6 +30,8 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
     
     var collectionView: UICollectionView?
     var flowLayout = UICollectionViewFlowLayout()
+    
+    var imageUrlArray = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,6 +86,9 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
         
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(touchCoordinate, regionRadius * 2.0 , regionRadius * 2.0)
         mapView.setRegion(coordinateRegion, animated: true)
+        retrieveUrls(forAnnotation: annotation) { (true) in
+            print(self.imageUrlArray)
+        }
     }
     
     func removePin(){
@@ -169,6 +176,24 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
             progressLbl?.removeFromSuperview()
         }
     }
+    
+    func retrieveUrls(forAnnotation annotation: DroppablePin, handler: @escaping (_ status: Bool) -> ()){
+        imageUrlArray = []
+        
+        Alamofire.request(flickrUrl(forApiKey: API_KEY, withAnnotation: annotation, andNumberOfPhotos: 40)).responseJSON { (response) in
+            guard let json = response.result.value as? Dictionary< String, AnyObject> else {return}
+            let photosDictionary = json["photos"] as! Dictionary<String, AnyObject
+            >
+            let photosDictionaryArray = photosDictionary["photo"] as! [Dictionary<String,AnyObject>]
+            
+            for photo in photosDictionaryArray {
+                let postURL = "https://farm\(photo["farm"]!).staticflickr.com/\(photo["server"]!)/\(photo["id"]!)_\(photo["secret"]!)_h_d.jpg"
+                // https:farm2.staticflickr.com/1799/42159369650_944e521740_k_d.jpg
+                self.imageUrlArray.append(postURL)
+        }
+            handler(true)
+    }
+}
 }
     extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
        
