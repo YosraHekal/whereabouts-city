@@ -71,6 +71,10 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
         removeProgressLbl()
         cancelAllSessions()
         
+        imageUrlArray = []
+        imageArray = []
+        
+        collectionView?.reloadData()
         
         animateViewUp()
         addSwipe()
@@ -94,7 +98,7 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
                     if finished {
                         self.removeSpinner()
                         self.removeProgressLbl()
-                        //reload collectionview
+                        self.collectionView?.reloadData()
                     }
                 })
             }
@@ -236,12 +240,15 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
             return 1
         }
         func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            //number of items in array
-            return 4
+            return imageArray.count
         }
         func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PHOTO_CELL , for: indexPath) as? PhotoCell
-            return cell!
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PHOTO_CELL , for: indexPath) as? PhotoCell else {return UICollectionViewCell()}
+            let imageFromIndex = imageArray[indexPath.row]
+            let imageVew = UIImageView(image: imageFromIndex)
+            cell.addSubview(imageVew)
+            
+            return cell
         }
         
     }
