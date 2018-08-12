@@ -37,7 +37,7 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
         addDoubleTap()
         
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: flowLayout)
-        collectionView?.register(PhotoCell.self , forCellWithReuseIdentifier: "photoCell")
+        collectionView?.register(PhotoCell.self , forCellWithReuseIdentifier: PHOTO_CELL)
         collectionView?.delegate = self
         collectionView?.dataSource = self
         collectionView?.backgroundColor = #colorLiteral(red: 0.9098039269, green: 0.4784313738, blue: 0.6431372762, alpha: 1)
@@ -74,8 +74,11 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
         let touchPoint = sender.location(in: mapView)
         let touchCoordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
         
-        let annotation = DroppablePin(coordinate: touchCoordinate, identifier: "droppablePin")
+        let annotation = DroppablePin(coordinate: touchCoordinate, identifier: DROPPABLE_PIN )
         mapView.addAnnotation(annotation)
+        
+        
+        print(flickrUrl(forApiKey: API_KEY, withAnnotation: annotation, andNumberOfPhotos: 40))
         
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(touchCoordinate, regionRadius * 2.0 , regionRadius * 2.0)
         mapView.setRegion(coordinateRegion, animated: true)
@@ -115,7 +118,7 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
         if annotation is MKUserLocation {
             return nil
         }
-        let pinAnnotation = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "droppablePin")
+        let pinAnnotation = MKPinAnnotationView(annotation: annotation, reuseIdentifier: DROPPABLE_PIN)
         pinAnnotation.pinTintColor = #colorLiteral(red: 1, green: 0.6356734633, blue: 0.1988151073, alpha: 1)
         pinAnnotation.animatesDrop = true
         return pinAnnotation
@@ -177,7 +180,7 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
             return 4
         }
         func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as? PhotoCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PHOTO_CELL , for: indexPath) as? PhotoCell
             return cell!
         }
         
