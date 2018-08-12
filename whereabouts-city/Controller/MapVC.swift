@@ -32,6 +32,7 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
     var flowLayout = UICollectionViewFlowLayout()
     
     var imageUrlArray = [String]()
+    var imageArray = [UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +45,7 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
         collectionView?.register(PhotoCell.self , forCellWithReuseIdentifier: PHOTO_CELL)
         collectionView?.delegate = self
         collectionView?.dataSource = self
-        collectionView?.backgroundColor = #colorLiteral(red: 0.9098039269, green: 0.4784313738, blue: 0.6431372762, alpha: 1)
+        collectionView?.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         
         pullUpView.addSubview(collectionView!)
     }
@@ -68,6 +69,7 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
         removePin()
         removeSpinner()
         removeProgressLbl()
+        cancelAllSessions()
         
         
         animateViewUp()
@@ -86,8 +88,16 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
         
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(touchCoordinate, regionRadius * 2.0 , regionRadius * 2.0)
         mapView.setRegion(coordinateRegion, animated: true)
-        retrieveUrls(forAnnotation: annotation) { (true) in
-            print(self.imageUrlArray)
+        retrieveUrls(forAnnotation: annotation) { (finished) in
+            if finished {
+                self.retrieveImages(handler: { (finished) in
+                    if finished {
+                        self.removeSpinner()
+                        self.removeProgressLbl()
+                        //reload collectionview
+                    }
+                })
+            }
         }
     }
     
@@ -138,6 +148,8 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
     }
     
     @objc func animateViewDown() {
+        cancelAllSessions()
+        
         pullUpViewHeightConstraint.constant = 0
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
@@ -165,7 +177,7 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
     func addProgressLabel(){
         progressLbl = UILabel()
         progressLbl?.frame = CGRect(x: (screenSize.width/2) - 120, y: 175, width: 240, height: 40)
-        progressLbl?.font = UIFont(name: "Avenir Next", size: 18)
+        progressLbl?.font = UIFont(name: "Avenir Next", size: 14)
         progressLbl?.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         progressLbl?.textAlignment = .center
         collectionView?.addSubview(progressLbl!)
@@ -194,6 +206,29 @@ class MapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIG
             handler(true)
     }
 }
+    func retrieveImages(handler: @escaping (_ status: Bool) -> ()){
+        imageArray = []
+        
+        for url in imageUrlArray{
+            Alamofire.request(url).responseImage { (response) in
+                guard let image = response.result.value else {return}
+                self.imageArray.append(image)
+                self.progressLbl?.text = "\(self.imageArray.count)/40 IMAGES DOWNLOADED"
+                
+                if self.imageArray.count == self.imageUrlArray.count {
+                    handler(true)
+                }
+            }
+            
+        }
+    }
+    
+    func cancelAllSessions(){
+        Alamofire.SessionManager.default.session.getTasksWithCompletionHandler { (sessionDataTask, uploadData, downloadData) in
+            sessionDataTask.forEach({ $0.cancel() })
+            downloadData.forEach({ $0.cancel() })
+        }
+    }
 }
     extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
        
